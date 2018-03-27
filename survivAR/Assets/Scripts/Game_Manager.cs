@@ -93,8 +93,12 @@ public class Game_Manager : MonoBehaviour {
     public GameObject ball;
     public GameObject plane;
 
+    public Text pointText;
+
     void Start()
     {
+
+        pointText.text = "Point:" + PlayerPrefs.GetInt("Point");
         // First, check if user has location service enabled
         //randomObjectCoordinate = randomCoordinateGenerator(Input.location.lastData.latitude, Input.location.lastData.longitude);
 
@@ -115,7 +119,7 @@ public class Game_Manager : MonoBehaviour {
         if (ball.transform.position.y < plane.transform.position.y - 10)
         {
             ball.transform.position = spawnPoint.transform.position;
-            workExitButton();
+            collectThePoint();
         }
         //Debug.Log(goldDistChecker);
         if (isGameOver() == true)
@@ -691,7 +695,57 @@ public class Game_Manager : MonoBehaviour {
 
 
         bigCircle.GetComponent<Image>().enabled = true;
-        smallCircle.GetComponent<Image>().enabled = true;
+        smallCircle.GetComponent<Image>().enabled = false;
+
+        restartButton.GetComponent<Image>().enabled = true;
+        restartButton.enabled = true;
+        restartButton.interactable = true;
+
+        exitButton.GetComponent<Image>().enabled = false;
+        exitButton.enabled = false;
+        exitButton.interactable = false;
+
+    }
+    public void collectThePoint()
+    {
+        int point = PlayerPrefs.GetInt("Point");
+        point = point + 10;
+        PlayerPrefs.SetInt("Point", point);
+        pointText.text = "Point:" + point;
+        img.GetComponent<RawImage>().enabled = true;
+        goldButton.GetComponent<Image>().enabled = true;
+        goldButton.enabled = true;
+        goldButton.interactable = true;
+
+        zoomInButton.GetComponent<Image>().enabled = true;
+        zoomInButton.enabled = true;
+        zoomInButton.interactable = true;
+
+        zoomOutButton.GetComponent<Image>().enabled = true;
+        zoomOutButton.enabled = true;
+        zoomOutButton.interactable = true;
+
+        upMoveButton.GetComponent<Image>().enabled = true;
+        upMoveButton.enabled = true;
+        upMoveButton.interactable = true;
+
+        downMoveButton.GetComponent<Image>().enabled = true;
+        downMoveButton.enabled = true;
+        downMoveButton.interactable = true;
+
+        leftMoveButton.GetComponent<Image>().enabled = true;
+        leftMoveButton.enabled = true;
+        leftMoveButton.interactable = true;
+
+        rightMoveButton.GetComponent<Image>().enabled = true;
+        rightMoveButton.enabled = true;
+        rightMoveButton.interactable = true;
+
+        mapBorder.GetComponent<RawImage>().enabled = true;
+
+
+        bigCircle.GetComponent<Image>().enabled = true;
+        smallCircle.GetComponent<Image>().enabled = false;
 
         restartButton.GetComponent<Image>().enabled = true;
         restartButton.enabled = true;

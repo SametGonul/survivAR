@@ -20,3 +20,18 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/dashboard.unity
     guid: 31d45f358220b6a419a91b31f7b13cbd
+  - enabled: 1
+    path: Assets/Scenes/NonMemberClanOption.unity
+    guid: fbc5e442b6bb9c9468aeb61a30de3ad5
+  - enabled: 1
+    path: Assets/Scenes/creatingClan.unity
+    guid: 698478527d6249f4f89f142e575dda0b
+  - enabled: 1
+    path: Assets/Scenes/joiningClan.unity
+    guid: 222de69da3799fa47b01700fc2246bba
+  - enabled: 1
+    path: Assets/Scenes/mastermember.unity
+    guid: 226e57b33be74d6419a2f7a62d08c5fb
+  - enabled: 1
+    path: Assets/Scenes/requests.unity
+    guid: adcdccee22265ef4f81fadc3ebefb8b5

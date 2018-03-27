@@ -27,6 +27,15 @@ public class dashboard : MonoBehaviour {
 
     public void goClanInfo()
     {
+        int userRole = PlayerPrefs.GetInt("userRole");
+        if (userRole == 0)
+        {
+            SceneManager.LoadScene("NonMemberClanOption");
+        }
 
+        else if (userRole == 4)
+        {
+            SceneManager.LoadScene("mastermember");
+        }
     }
 }

@@ -11,6 +11,10 @@ public class registerPage : MonoBehaviour
     public InputField password;
     public string Username;
     public string Password;
+
+    public Text errorHandlingText;
+    public Button registerButton;
+
     // Use this for initialization
     void Start()
     {
@@ -37,7 +41,7 @@ public class registerPage : MonoBehaviour
         form.AddField("passwordPost", Password);
         
 
-        WWW www = new WWW("http://cng491.000webhostapp.com/test2.php", form);
+        WWW www = new WWW("http://cng491.000webhostapp.com/register2.php", form);
 
         while (!www.isDone)
         {
@@ -46,14 +50,53 @@ public class registerPage : MonoBehaviour
         if (www.isDone)
         {
             string ResultString = www.text;
-            if (ResultString == "Everything ok.")
-            {
-                Debug.Log("Register Success");
-                // to do (GO DASHBOARD includes start game,clans, etc.)
-            }
-            else
-                Debug.Log(ResultString);
+            handleError(ResultString);
+   
         }
+    }
+
+    private void handleError(string type)
+    {
+        if (type == "0")
+        {
+            errorHandlingText.text = "You registered successfully.";
+            PlayerPrefs.SetInt("Point", 0);
+
+        }
+        else if(type == "1")
+        {
+            errorHandlingText.text = "Username must be 3-15 chars.";
+        }
+        else if (type == "2")
+        {
+            errorHandlingText.text = "Password must be 3-15 chars.";
+        }
+        else if (type == "4")
+        {
+            errorHandlingText.text = "Username has taken.";
+        }
+        else if (type == "5")
+        {
+            errorHandlingText.text = "Database error.";
+        }
+
+        username.GetComponent<InputField>().text = "";
+        username.placeholder.GetComponent<Text>().enabled = false;
+        username.GetComponent<Image>().enabled = false;
+        username.GetComponent<InputField>().enabled = false;
+
+        password.GetComponent<InputField>().text = "";
+        password.placeholder.GetComponent<Text>().enabled = false;
+        password.GetComponent<Image>().enabled = false;
+        password.GetComponent<InputField>().enabled = false;
+
+        registerButton.interactable = false;
+        registerButton.GetComponent<Image>().enabled = false;
+        registerButton.GetComponent<Button>().enabled = false;
+        registerButton.GetComponentInChildren<Text>().enabled = false;
+
+        errorHandlingText.GetComponent<Text>().enabled = true;
+        
     }
     public void goMainmenu()
     {
