@@ -20,6 +20,8 @@ public class requests : MonoBehaviour {
     string[] tokens2;
     int masterID;
     // Use this for initialization
+    public Button[] buttons = new Button[10];
+
     void Start () {
 
         masterID = PlayerPrefs.GetInt("userID");
@@ -43,18 +45,37 @@ public class requests : MonoBehaviour {
         if (www.isDone)
         {
             string ResultString = www.text;
-            Debug.Log(ResultString);
             tokens1 = ResultString.Split(';');
+          
             int i;
-            for (i = 0; i < tokens1.Length; i++)
+            
+            for (i = 0; i < tokens1.Length-1; i++)
             {
                 tokens2 = tokens1[i].Split(' ');
                 string requestedName = tokens2[0];
                 int requestedID = int.Parse(tokens2[1]);
                 int requestedPoint = int.Parse(tokens2[2]);
-                requestTexts[i].text = requestedName + "   " + requestedPoint;
-            }
+                requestTexts[i].text = requestedName + "          " + requestedPoint;
+                buttons[(2 * i)].GetComponent<Image>().enabled = true;
+                buttons[(2 * i)].enabled = true;
+                buttons[(2 * i)].interactable = true;
 
+                buttons[(2 * i) + 1].GetComponent<Image>().enabled = true;
+                buttons[(2 * i) + 1].enabled = true;
+                buttons[(2 * i) + 1].interactable = true;
+            }
+     
+            int a;
+            for(a = i; a < 5; a++)
+            {
+                buttons[(2 * a)].GetComponent<Image>().enabled = false;
+                buttons[(2 * a)].enabled = false;
+                buttons[(2 * a)].interactable = false;
+
+                buttons[(2 * a) + 1].GetComponent<Image>().enabled = false;
+                buttons[(2 * a) + 1].enabled = false;
+                buttons[(2 * a) + 1].interactable = false;
+            }
         }
     }
 	
@@ -280,6 +301,11 @@ public class requests : MonoBehaviour {
 
         }
         Application.LoadLevel("requests");
+    }
+
+    public void backButton()
+    {
+        SceneManager.LoadScene("mastermember");
     }
 
 }

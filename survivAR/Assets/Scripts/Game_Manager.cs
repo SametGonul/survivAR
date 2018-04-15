@@ -95,9 +95,14 @@ public class Game_Manager : MonoBehaviour {
 
     public Text pointText;
 
+    private bool secondDistanceChecker = false;
+    private bool secondShrinkChecker = false;
+    private float k = 1f;
+    private float widthBigCircle;
+
     void Start()
     {
-
+        PlayerPrefs.SetInt("Points", 0);
         pointText.text = "Point:" + PlayerPrefs.GetInt("Point");
         // First, check if user has location service enabled
         //randomObjectCoordinate = randomCoordinateGenerator(Input.location.lastData.latitude, Input.location.lastData.longitude);
@@ -186,6 +191,7 @@ public class Game_Manager : MonoBehaviour {
             {
                 xDif = bigCircleCoordinates.x - smallCircleCoordinates.x;
                 yDif = bigCircleCoordinates.y - smallCircleCoordinates.y;
+                widthBigCircle = bigCircle.GetComponent<RectTransform>().sizeDelta.x;
                 zoomChecker = zoomNo;
                 distanceChecker = true;
             }
@@ -195,7 +201,7 @@ public class Game_Manager : MonoBehaviour {
             if (shrinkTime >= i)
             {
                 i++;
-                shrink(xDif, yDif);
+                shrink(widthBigCircle,xDif, yDif);
                 if (i >= 11f)
                 {
                     shrinkTime = 1f;
@@ -206,13 +212,46 @@ public class Game_Manager : MonoBehaviour {
             if (shrinkChecker == true)
             {
                 bigCircleCoordinates = smallCircleCoordinates;
-                smallCircle.GetComponent<Image>().enabled = false;
+                //smallCircle.GetComponent<Image>().enabled = false;
+                setSmallCircleSecondShrink(bigCircleCoordinates.x, bigCircleCoordinates.y);
             }
+        }
+
+        if (minutes <= 2 && seconds <= 25 && secondShrinkChecker == false)
+        {
+            if(secondDistanceChecker == false)
+            {
+                xDif = bigCircleCoordinates.x - smallCircleCoordinates.x;
+                yDif = bigCircleCoordinates.y - smallCircleCoordinates.y;
+                widthBigCircle = bigCircle.GetComponent<RectTransform>().sizeDelta.x;
+                zoomChecker = zoomNo;
+                secondDistanceChecker = true;
+            }
+       
+            shrinkTime = shrinkTime + Time.deltaTime;
+            if (shrinkTime >= k)
+            {
+      
+                k++;
+                shrink(widthBigCircle,xDif, yDif);
+                if (k >= 11f)
+                {
+                    shrinkTime = 0f;
+                    secondShrinkChecker = true;
+                }
+
+                if (secondShrinkChecker == true)
+                {
+                    bigCircleCoordinates = smallCircleCoordinates;
+                    smallCircle.GetComponent<Image>().enabled = false;
+                }
+            }
+
         }
 
 
 
-        if (state == 0)
+            if (state == 0)
         {
             //lat = Input.location.lastData.latitude;
             //lon = Input.location.lastData.longitude;
@@ -284,7 +323,10 @@ public class Game_Manager : MonoBehaviour {
                 endText.enabled = true;
                 homeButton.GetComponent<Image>().enabled = true;
                 homeButton.enabled = true;
+
+                updateGame();
                 endCheck = true;
+                
             }
         }
     }
@@ -527,14 +569,14 @@ public class Game_Manager : MonoBehaviour {
     }
 
     //shrink big circle to small circle
-    public void shrink(float xDif, float yDif)
+    public void shrink(float bigSize,float xDif, float yDif)
     {
         float x = bigCircleCoordinates.x;
         float y = bigCircleCoordinates.y;
 
         float width = bigCircle.GetComponent<RectTransform>().sizeDelta.x;
         float height = bigCircle.GetComponent<RectTransform>().sizeDelta.y;
-        float circleShrinkConstant = 60f;   // decrease width and height as this number
+        float circleShrinkConstant = (bigSize - smallCircle.GetComponent<RectTransform>().sizeDelta.x)/10f;   // decrease width and height as this number
         float outsideConstant = 30f;   // to control user location inside or outside change this according to zoom
 
         xDif = xDif / 10f;
@@ -755,6 +797,56 @@ public class Game_Manager : MonoBehaviour {
         exitButton.enabled = false;
         exitButton.interactable = false;
 
+    }
+
+    private void setSmallCircleSecondShrink(float lat,float lon)
+    {
+        float newWidth = smallCircle.GetComponent<RectTransform>().sizeDelta.x;
+        float newHeight = smallCircle.GetComponent<RectTransform>().sizeDelta.y;
+        smallCircle.GetComponent<RectTransform>().sizeDelta = new Vector2(newWidth / 2, newHeight / 2);
+        Vector2 newCoordinate = new Vector2(Random.Range(lat - 0.0003f, lat + 0.0003f), Random.Range(lon - 0.0003f, lon + 0.0003f));
+        smallCircleCoordinates = newCoordinate;
+        updateSmallCircleLocation();
+    }
+
+    private void updateGame()
+    {
+        int userID = PlayerPrefs.GetInt("userID");
+        int userRole = PlayerPrefs.GetInt("userRole");
+        int point = PlayerPrefs.GetInt("Point");
+
+        WWWForm form1 = new WWWForm();
+        form1.AddField("useridPost", userID);
+
+        WWW www2 = new WWW("http://cng491.000webhostapp.com/refreshuserinfo.php", form1);
+
+        while (!www2.isDone)
+        {
+
+        }
+        if (www2.isDone)
+        {
+            string ResultString = www2.text;
+            PlayerPrefs.SetInt("userRole", int.Parse(ResultString));
+
+        }
+
+        WWWForm form = new WWWForm();
+        form.AddField("useridPost", userID);
+        form.AddField("userrolePost", userRole);
+        form.AddField("pointsPost", point);
+        WWW www = new WWW("http://cng491.000webhostapp.com/updatescores2.php", form);
+
+        while (!www.isDone)
+        {
+
+        }
+        if (www.isDone)
+        {
+            string ResultString = www.text;
+            Debug.Log(ResultString); ;
+            PlayerPrefs.SetInt("Point", 0);
+        }
     }
 }
     

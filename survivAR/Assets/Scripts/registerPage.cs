@@ -41,7 +41,7 @@ public class registerPage : MonoBehaviour
         form.AddField("passwordPost", Password);
         
 
-        WWW www = new WWW("http://cng491.000webhostapp.com/register2.php", form);
+        WWW www = new WWW("http://cng491.000webhostapp.com/register3.php", form);
 
         while (!www.isDone)
         {
@@ -71,6 +71,12 @@ public class registerPage : MonoBehaviour
         {
             errorHandlingText.text = "Password must be 3-15 chars.";
         }
+
+        else if (type == "3")
+        {
+            errorHandlingText.text = "Invalid character in name";
+        }
+
         else if (type == "4")
         {
             errorHandlingText.text = "Username has taken.";
